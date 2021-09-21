@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" type="text/css" href="webuploader.css">
+<script src="jquery-1.11.1.js"></script>
+<script src="webuploader.js"></script>
+<style>
+    #upload-container, #upload-list{width: 500px;margin: 0 auto;}
+    #upload-container{cursor: pointer; border-radius: 15px; background: #EEEFFF; height: 200px;}
+    #upload-list{height:800px; border:1px solid #EEE; border-radius: 5px; margin-top: 10px;}
+    #upload-container>span{widows: 100%; text-align: center; color: gray; display: block;}
+    .upload-item{margin-top: 5px; padding-bottom: 5px; border-bottom: 1px dashed gray;}
+    .percentage{height: 5px; background: green;}
+    .btn-delete, .btn-retry{cursor: pointer; color: gray;}
+    .btn-delete:hover{color :orange;}
+    .btn-retry:hover{color: green;}
+</style>
+
+<body>
+<div id="upload-container">
+    <span>点击或拖拽此上传</span>
+</div>
+
+<div id="upload-list"></div>
+
+<button id="picker">点击上传文件</button>
+
+</body>
+
+<script>
+    $("#upload-container").click(function (event) {
+        $("#picker").find('input').click();
+
+    });
+    var uploader = WebUploader.create({
+        auto:true,//选完文件是否自动上传
+        swf:'Uploader.swf',//swf文件路径
+        server:'http://localhost:8080/upload',//文件服务器
+        dnd:'#upload-container',
+        pick:'#picker',
+        multiple:true,
+        chunked:true,//开启分块上传
+        threads:10,//并发上传 10个线程
+        method:'POST',//文件以post方式上传
+        fileSizeLimit:1024*1024*1024*10,//验证文件总大小是否超出限制
+        fileSingleSizeLimit:1024*1024*1024,
+        fileVal:'upload',//设置文件上传域的name
+    });
+
+    uploader.on("beforeFileQueued",function (file) {
+        console.log(file);//获取文件后缀
+    });
+
+    uploader.on("fileQueued",function (file) {
+        console.log(file.ext);//获取文件后缀
+        console.log(file.size);
+        console.log(file.name);
+        var html = '<div class="upload-item"><span>文件名：'+file.name+'</span><span data-file_id="'+file.id+'" class="btn-delete">删除</span><span data-file_id="'+file.id +'" class="btn-retry">重试</span>';
+        $('#upload-list').append(html);
+        uploader.md5File(file)
+
+        //及时显示进度
+        .progress(function (percentage) {
+
+            console.log('Percentage',percentage);
+
+        })
+
+        .then(function (val) {
+            console.log('md5 result',val);
+        })
+
+    });
+
+    //上传进度
+    uploader.on("uploadProgress",function (file,percentage) {
+        console.log(percentage*100+'%');
+        var width = $('.up-item').width();
+        $('.'+file.id).width(width*percentage);
+
+    });
+
+    uploader.on("uploadSuccess",function (file,reponse) {
+        console.log(file.id+'上传成功！');
+
+    });
+
+    uploader.on("uploadError",function (file,reponse) {
+        console.log(file);
+        console.log(file.id+'上传失败！');
+
+    });
+
+    $('#upload-list').on('click','.upload-item .btn-delete',function () {
+
+        file_id = $(this).data('file_id');
+        uploader.removeFile(file_id,true);
+        console.log(uploader.getFiles());
+
+    });
+    $('#upload-list').on('click','.upload-item .btn-retry',function () {
+        uploader.retry($(this).data('file_id'));
+    });
+
+    uploader.on("uploadComplete",function (file) {
+        console.log(uploader.getFiles());
+
+    });
+</script>
+</html>
