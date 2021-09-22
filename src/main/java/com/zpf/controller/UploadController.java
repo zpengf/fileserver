@@ -1,10 +1,13 @@
 package com.zpf.controller;
 
 
+import com.zpf.dto.FileInfo;
+import com.zpf.mapper.FileInfoMapper;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,11 +23,18 @@ public class UploadController {
 
     private final static String utf8 = "utf-8";
 
+    @Autowired
+    private FileInfoMapper fileInfoMapper;
+
     @RequestMapping("/upload")
     @ResponseBody
     public void upload(HttpServletRequest request, HttpServletResponse response) throws Exception{
         //分块
         response.setCharacterEncoding(utf8);
+
+        List<FileInfo> list = fileInfoMapper.selectAllFile();
+        
+        System.out.println(list);
 
         Integer schunk = null;//当前分块 数字
         Integer schunks = null;//总的分块数量

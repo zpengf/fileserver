@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zpf.mapper.FileInfoMapper">
+
+    <!--查询多条数据-->
+    <!--resultType是数据返回放到哪个类型中-->
+    <select id="selectAllFile" resultType="com.zpf.dto.FileInfo">
+        SELECT * FROM file_info
+    </select>
+
+    <select id="selectFileById" resultType="com.zpf.dto.FileInfo">
+        SELECT * FROM file_info WHERE id=#{id}
+    </select>
+
+    <select id="selectFileByCode" resultType="com.zpf.dto.FileInfo">
+        SELECT * FROM file_info WHERE file_code=#{fileCode}
+    </select>
+
+
+    <!--删除-->
+    <delete id="deleteFile">
+        DELETE FROM file_info Where id=#{id}
+    </delete>
+
+    <!--新增-->
+    <insert id="addFile">
+        INSERT INTO file_info(file_name,file_code,create_time) VALUES (#{fileName},#{fileCode},#{createTime})
+    </insert>
+
+</mapper>
