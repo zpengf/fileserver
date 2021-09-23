@@ -9,12 +9,16 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -22,6 +26,9 @@ public class UploadController {
 
 
     private final static String utf8 = "utf-8";
+
+    //定义上传目录
+    private final static String upload_path = "/Users/pengfeizhang/Desktop/javaProject/filetest";
 
     @Autowired
     private FileInfoMapper fileInfoMapper;
@@ -31,10 +38,6 @@ public class UploadController {
     public void upload(HttpServletRequest request, HttpServletResponse response) throws Exception{
         //分块
         response.setCharacterEncoding(utf8);
-
-        List<FileInfo> list = fileInfoMapper.selectAllFile();
-        
-        System.out.println(list);
 
         Integer schunk = null;//当前分块 数字
         Integer schunks = null;//总的分块数量
@@ -118,6 +121,19 @@ public class UploadController {
             }
 
         }
+    }
+
+
+    @GetMapping(value = "/queryAll",produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public List<FileInfo> allStudent(HttpServletResponse response) throws IOException {
+        List<FileInfo> fileInfos = fileInfoMapper.selectAllFile();
+
+
+     /*   ObjectMapper x = new ObjectMapper();
+        String str1 = x.writeValueAsString(students);      //集合转json类型字符串
+        response.getWriter().write(str1);    //返回前端ajax*/
+        return fileInfos;
     }
 
 }

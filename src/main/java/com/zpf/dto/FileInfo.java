@@ -6,6 +6,15 @@ import java.util.Date;
 
 public class FileInfo {
 
+    public FileInfo(long fileSize, String fileName) {
+        this.fileSize = fileSize;
+        this.fileName = fileName;
+    }
+
+    public FileInfo() {
+
+    }
+
     private Long id;
 
     private String fileName;
@@ -13,6 +22,16 @@ public class FileInfo {
     private String fileCode;
 
     private Date createTime;
+
+    private Long fileSize;
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
 
     public Long getId() {
         return id;
