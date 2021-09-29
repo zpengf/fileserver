@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * 文件下载服务端
@@ -18,6 +19,9 @@ public class DownloadController {
 
     @RequestMapping("/download")
     public void downLoadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        long currentTime1 = new Date().getTime();
+
 
         File file = new File("/Users/pengfeizhang/Desktop/javaProject/filetest/1-1课程整体介绍.mp4");
         response.setCharacterEncoding(utf8);
@@ -128,6 +132,12 @@ public class DownloadController {
                 //写
                 os.write(buffer, 0, length);
             }
+
+            long cun2 = new Date().getTime();
+
+            System.out.println((cun2 - currentTime1)/1000);
+
+
             System.out.println("下载完成");
         } finally {
             if (is != null) {

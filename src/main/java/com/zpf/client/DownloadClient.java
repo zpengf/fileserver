@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,6 +47,9 @@ public class DownloadClient {
     @RequestMapping("/Client-download")
     public String downloadFile() throws Exception {
 
+        long currentTime1 = new Date().getTime();
+
+    
         //做个一个探测  下载小部分获取文件信息
         FileInfo fileInfo = download(0,10,-1,null);
 
@@ -55,10 +59,11 @@ public class DownloadClient {
             for(int i = 0;i <= pages;i++){
                 pool.submit(new downThred(i * per_page,(i + 1) * per_page - 1,i,fileInfo.getFileName()));
             }
-
-
-
         }
+        long cun2 = new Date().getTime();
+        
+        System.out.println((cun2 - currentTime1)/1000);
+        
         return "success";
     }
 

@@ -30,12 +30,15 @@ public class UploadController {
     //定义上传目录
     private final static String upload_path = "/Users/pengfeizhang/Desktop/javaProject/filetest";
 
-    @Autowired
-    private FileInfoMapper fileInfoMapper;
-
     @RequestMapping("/upload")
     @ResponseBody
     public void upload(HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+
+        long currentTime1 = 0;
+
+        long currentTime2 = 0;
+
         //分块
         response.setCharacterEncoding(utf8);
 
@@ -56,6 +59,7 @@ public class UploadController {
             upload.setSizeMax(10l * 1024l * 1024l * 1024l);
 
             List<FileItem> fileItems =  upload.parseRequest(request);//直接解析 request
+
             for(FileItem fileItem:fileItems){
                 if(fileItem.isFormField()){
                     if("chunk".equals(fileItem.getFieldName())){
@@ -87,7 +91,6 @@ public class UploadController {
                         }
                     }
                 }
-
             }
             //合并分块 先判断是否有分块 没有不需要合并
             // 当前分块==总的分块数 表示文件都来了 进行合并
@@ -107,8 +110,11 @@ public class UploadController {
                     os.flush();
                     file.delete();
                 }
+
+
                 os.flush();
             }
+
             response.getWriter().write("上传成功！");
 
         } finally {
@@ -123,17 +129,17 @@ public class UploadController {
         }
     }
 
-
-    @GetMapping(value = "/queryAll",produces="application/json;charset=UTF-8")
-    @ResponseBody
-    public List<FileInfo> allStudent(HttpServletResponse response) throws IOException {
-        List<FileInfo> fileInfos = fileInfoMapper.selectAllFile();
-
-
-     /*   ObjectMapper x = new ObjectMapper();
-        String str1 = x.writeValueAsString(students);      //集合转json类型字符串
-        response.getWriter().write(str1);    //返回前端ajax*/
-        return fileInfos;
-    }
+//
+//    @GetMapping(value = "/queryAll",produces="application/json;charset=UTF-8")
+//    @ResponseBody
+//    public List<FileInfo> allStudent(HttpServletResponse response) throws IOException {
+//        List<FileInfo> fileInfos = fileInfoMapper.selectAllFile();
+//
+//
+//     /*   ObjectMapper x = new ObjectMapper();
+//        String str1 = x.writeValueAsString(students);      //集合转json类型字符串
+//        response.getWriter().write(str1);    //返回前端ajax*/
+//        return fileInfos;
+//    }
 
 }

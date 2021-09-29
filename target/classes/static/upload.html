@@ -30,8 +30,12 @@
 </body>
 
 <script>
+
+    var cutime1;
+    var cutime2;
     $('#upload-container').click(function(event) {
         $("#picker").find('input').click();
+
     });
     var uploader = WebUploader.create({
         auto: true,// 选完文件后，是否自动上传。
@@ -40,7 +44,7 @@
         dnd: '#upload-container',
         pick: '#picker',// 内部根据当前运行是创建，可能是input元素，也可能是flash. 这里是div的id
         multiple: true, // 选择多个
-        chunked: true,// 开启分片上传。
+        chunked: false,// 开启分片上传。
         threads: 20, // 上传并发数。允许同时最大上传进程数。
         method: 'POST', // 文件上传方式，POST或者GET。
         fileSizeLimit: 1024*1024*1024*10, //验证文件总大小是否超出限制, 超出则不允许加入队列。
@@ -49,6 +53,9 @@
     });
 
     uploader.on("beforeFileQueued", function(file) {
+        var myDate = new Date();
+        cutime1 = myDate.getTime();
+
         console.log(file); // 获取文件的后缀
     });
 
@@ -79,7 +86,11 @@
     });
 
     uploader.on('uploadSuccess', function(file, response) {
+        var myDate = new Date();
+        cutime2=  myDate.getTime();;
+
         console.log(file.id+"传输成功");
+        alert((cutime2 - cutime1) / 1000)
     });
 
     uploader.on('uploadError', function(file) {
